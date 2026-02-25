@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}UniFound{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold mb-3">
+            <i class="bi bi-search-heart-fill me-2"></i>UniFound
+        </h1>
+        <p class="lead mb-4">Lost something on campus? Found something? Post it here and help your fellow students!</p>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">
+            <i class="bi bi-person-plus me-1"></i>Get Started
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+        </a>
+        {% else %}
+        <a href="{% url 'post_item' %}" class="btn btn-light btn-lg">
+            <i class="bi bi-plus-circle me-1"></i>Post an Item
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container pb-5">
+    <!-- Filter Bar -->
+    <div class="page-header d-flex flex-wrap align-items-center gap-3">
+        <h5 class="mb-0 me-auto fw-bold"><i class="bi bi-collection me-2"></i>Recent Items</h5>
+
+        <form method="get" class="d-flex flex-wrap gap-2 align-items-center">
+            <select name="status" class="form-select form-select-sm" style="width:140px;" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option value="Lost" {% if status_filter == 'Lost' %}selected{% endif %}>Lost</option>
+                <option value="Found" {% if status_filter == 'Found' %}selected{% endif %}>Found</option>
+                <option value="Returned" {% if status_filter == 'Returned' %}selected{% endif %}>Returned</option>
+            </select>
+
+            <select name="category" class="form-select form-select-sm" style="width:150px;" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if category_filter == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+
+            {% if status_filter or category_filter %}
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-x-circle me-1"></i>Clear
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Items Grid -->
+    {% if items %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for item in items %}
+        <div class="col">
+            <div class="card h-100">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" class="item-image" alt="{{ item.title }}">
+                {% else %}
+                <div class="item-image-placeholder">
+                    <i class="bi bi-image"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title fw-bold mb-0">{{ item.title }}</h6>
+                        {% if item.status == 'Lost' %}
+                        <span class="badge badge-lost status-badge">Lost</span>
+                        {% elif item.status == 'Found' %}
+                        <span class="badge badge-found status-badge">Found</span>
+                        {% else %}
+                        <span class="badge badge-returned status-badge">Returned</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="card-text text-muted small">{{ item.description|truncatechars:80 }}</p>
+
+                    <div class="d-flex flex-wrap gap-2 small text-muted mt-2">
+                        <span><i class="bi bi-geo-alt me-1"></i>{{ item.location }}</span>
+                        {% if item.category %}
+                        <span><i class="bi bi-tag me-1"></i>{{ item.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="small text-muted mt-1">
+                        <i class="bi bi-clock me-1"></i>{{ item.date_posted|date:"M d, Y" }}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 pb-3">
+                    <a href="{% url 'item_detail' item.pk %}" class="btn btn-primary btn-sm w-100">
+                        <i class="bi bi-eye me-1"></i>View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-inbox" style="font-size:4rem; color:#dee2e6;"></i>
+        <h4 class="mt-3 text-muted">No items found</h4>
+        <p class="text-muted">Be the first to post a lost or found item!</p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'post_item' %}" class="btn btn-primary mt-2">Post an Item</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

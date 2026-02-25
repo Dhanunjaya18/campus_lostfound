@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Inbox - Campus Lost & Found{% endblock %}
+
+{% block extra_css %}
+<style>
+    .conv-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f2f5;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.15s;
+        cursor: pointer;
+    }
+    .conv-item:hover { background: #f8f9fa; }
+    .conv-item.unread { background: #f0f4ff; }
+
+    .conv-avatar {
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2c3e8c, #1a2564);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .conv-body { flex: 1; min-width: 0; }
+    .conv-name { font-weight: 600; font-size: 0.95rem; }
+    .conv-preview { font-size: 0.83rem; color: #6c757d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .conv-item.unread .conv-preview { color: #212529; font-weight: 500; }
+
+    .conv-meta { text-align: right; flex-shrink: 0; }
+    .conv-time { font-size: 0.75rem; color: #adb5bd; margin-bottom: 4px; }
+
+    .unread-badge {
+        background: #2c3e8c; color: white;
+        border-radius: 50%; width: 20px; height: 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.7rem; font-weight: 700;
+        margin-left: auto;
+    }
+
+    .item-tag {
+        font-size: 0.72rem;
+        background: #e8eaf6;
+        color: #2c3e8c;
+        padding: 2px 8px;
+        border-radius: 12px;
+        display: inline-flex; align-items: center; gap: 3px;
+        margin-top: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 700px;">
+    <div class="page-header d-flex align-items-center justify-content-between">
+        <div>
+            <h4 class="fw-bold mb-0">
+                <i class="bi bi-chat-dots me-2"></i>Messages
+                {% if total_unread > 0 %}
+                <span class="badge bg-danger ms-1">{{ total_unread }}</span>
+                {% endif %}
+            </h4>
+            <small class="text-muted">{{ conv_list|length }} conversation{{ conv_list|length|pluralize }}</small>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden">
+        {% if conv_list %}
+            {% for c in conv_list %}
+            <a href="{% url 'chat_room' c.conv.id %}" class="conv-item {% if c.unread > 0 %}unread{% endif %}">
+                <div class="conv-avatar">{{ c.other_user.username|first|upper }}</div>
+                <div class="conv-body">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="conv-name">{{ c.other_user.username }}</span>
+                    </div>
+                    <div class="conv-preview">
+                        {% if c.last_message %}
+                            {% if c.last_message.sender == request.user %}You: {% endif %}
+                            {{ c.last_message.content|truncatechars:55 }}
+                        {% else %}
+                            No messages yet — click to start chatting
+                        {% endif %}
+                    </div>
+                    <div class="item-tag">
+                        <i class="bi bi-tag" style="font-size:0.65rem;"></i>
+                        {{ c.conv.item.title|truncatechars:30 }}
+                    </div>
+                </div>
+                <div class="conv-meta">
+                    <div class="conv-time">
+                        {% if c.last_message %}{{ c.last_message.timestamp|date:"M d" }}{% endif %}
+                    </div>
+                    {% if c.unread > 0 %}
+                    <div class="unread-badge">{{ c.unread }}</div>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+        <div class="text-center py-5 px-3">
+            <i class="bi bi-chat-dots" style="font-size:4rem; color:#dee2e6;"></i>
+            <h5 class="mt-3 text-muted">No conversations yet</h5>
+            <p class="text-muted small">Browse items and click "Chat with Owner" to start a conversation.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-1">Browse Items</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - Campus Lost & Found{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="form-card">
+                <div class="text-center mb-4">
+                    <div style="width:60px;height:60px;background:#e8eaf6;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                        <i class="bi bi-plus-circle-fill text-primary" style="font-size:1.8rem;"></i>
+                    </div>
+                    <h4 class="fw-bold">{{ title }}</h4>
+                    <p class="text-muted small">Fill in the details about the item</p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Item Title <span class="text-danger">*</span></label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                            {{ form.status }}
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Category</label>
+                            {{ form.category }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Location <span class="text-danger">*</span></label>
+                        {{ form.location }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Image <span class="text-muted">(optional)</span></label>
+                        {{ form.image }}
+                        {% if item.image %}
+                        <div class="mt-2">
+                            <small class="text-muted">Current: </small>
+                            <img src="{{ item.image.url }}" height="60" class="rounded">
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle me-2"></i>{{ title }}
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

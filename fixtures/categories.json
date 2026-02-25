@@ -1,0 +1,10 @@
+[
+  {"model": "items.category", "pk": 1, "fields": {"name": "Electronics"}},
+  {"model": "items.category", "pk": 2, "fields": {"name": "Clothing & Accessories"}},
+  {"model": "items.category", "pk": 3, "fields": {"name": "Books & Notes"}},
+  {"model": "items.category", "pk": 4, "fields": {"name": "ID & Cards"}},
+  {"model": "items.category", "pk": 5, "fields": {"name": "Keys"}},
+  {"model": "items.category", "pk": 6, "fields": {"name": "Bags & Backpacks"}},
+  {"model": "items.category", "pk": 7, "fields": {"name": "Sports Equipment"}},
+  {"model": "items.category", "pk": 8, "fields": {"name": "Other"}}
+]

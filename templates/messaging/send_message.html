@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Send Message - Campus Lost & Found{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="form-card">
+                <div class="text-center mb-4">
+                    <div style="width:60px;height:60px;background:#e8eaf6;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                        <i class="bi bi-envelope-fill text-primary" style="font-size:1.8rem;"></i>
+                    </div>
+                    <h5 class="fw-bold">Contact Owner</h5>
+                </div>
+
+                <!-- Item Info -->
+                <div class="card bg-light border-0 mb-4">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center gap-3">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" width="50" height="50" style="object-fit:cover;border-radius:8px;">
+                            {% else %}
+                            <div style="width:50px;height:50px;background:#dee2e6;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                            <div>
+                                <div class="fw-semibold">{{ item.title }}</div>
+                                <small class="text-muted">
+                                    {% if item.status == 'Lost' %}<span class="badge bg-danger">Lost</span>
+                                    {% elif item.status == 'Found' %}<span class="badge bg-success">Found</span>
+                                    {% else %}<span class="badge bg-secondary">Returned</span>{% endif %}
+                                    &nbsp;Posted by <strong>{{ item.posted_by.username }}</strong>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Your Message</label>
+                        {{ form.content }}
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send me-2"></i>Send Message
+                        </button>
+                        <a href="{% url 'item_detail' item.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
