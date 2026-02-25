@@ -1,1 +1,1 @@
-web
+gunicorn UniFound.wsgi:application
