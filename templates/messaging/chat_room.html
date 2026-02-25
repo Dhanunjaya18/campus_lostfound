@@ -4,260 +4,125 @@
 {% block extra_css %}
 <style>
     .chat-container {
-        display: flex;
-        flex-direction: column;
-        height: calc(100vh - 200px);
-        min-height: 500px;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-        overflow: hidden;
+        display: flex; flex-direction: column;
+        height: calc(100vh - 200px); min-height: 500px;
+        background: #fff; border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10); overflow: hidden;
     }
-
-    /* Chat Header */
     .chat-header {
         background: linear-gradient(135deg, #2c3e8c, #1a2564);
-        color: white;
-        padding: 16px 20px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        flex-shrink: 0;
+        color: white; padding: 16px 20px;
+        display: flex; align-items: center; gap: 14px; flex-shrink: 0;
     }
-
     .chat-avatar {
-        width: 42px; height: 42px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.1rem; font-weight: 700;
-        flex-shrink: 0;
+        width: 42px; height: 42px; background: rgba(255,255,255,0.2);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem; font-weight: 700; flex-shrink: 0;
     }
-
     .chat-header-info { flex: 1; }
     .chat-header-name { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
     .chat-header-sub { font-size: 0.78rem; opacity: 0.85; }
-
     .online-dot {
-        width: 10px; height: 10px;
-        background: #2ecc71; border-radius: 50%;
-        display: inline-block; margin-right: 5px;
-        animation: pulse 2s infinite;
+        width: 10px; height: 10px; background: #2ecc71; border-radius: 50%;
+        display: inline-block; margin-right: 5px; animation: pulse 2s infinite;
     }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
-
-    /* Item Card in Header */
     .item-chip {
-        background: rgba(255,255,255,0.15);
-        border-radius: 20px;
-        padding: 5px 12px;
-        font-size: 0.78rem;
+        background: rgba(255,255,255,0.15); border-radius: 20px;
+        padding: 5px 12px; font-size: 0.78rem;
         display: flex; align-items: center; gap: 6px;
-        text-decoration: none; color: white;
-        transition: background 0.2s;
+        text-decoration: none; color: white; transition: background 0.2s;
     }
     .item-chip:hover { background: rgba(255,255,255,0.25); color: white; }
 
-    /* Messages Area */
     .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        flex: 1; overflow-y: auto; padding: 20px;
+        display: flex; flex-direction: column; gap: 10px;
         background: #f5f6fa;
     }
-
     .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
 
-    /* Message Bubbles */
-    .msg-row {
-        display: flex;
-        align-items: flex-end;
-        gap: 8px;
-        animation: fadeSlideUp 0.25s ease;
-    }
-
-    @keyframes fadeSlideUp {
-        from { opacity: 0; transform: translateY(8px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
+    .msg-row { display: flex; align-items: flex-end; gap: 8px; animation: fadeSlideUp 0.25s ease; }
+    @keyframes fadeSlideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .msg-row.own { flex-direction: row-reverse; }
 
     .msg-avatar {
-        width: 30px; height: 30px;
-        border-radius: 50%;
-        background: #2c3e8c;
-        color: white;
+        width: 30px; height: 30px; border-radius: 50%;
+        background: #2c3e8c; color: white;
         display: flex; align-items: center; justify-content: center;
-        font-size: 0.75rem; font-weight: 700;
-        flex-shrink: 0;
+        font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
     }
-
     .msg-avatar.own-av { background: #6c757d; }
 
     .msg-bubble {
-        max-width: 65%;
-        padding: 10px 14px;
-        border-radius: 18px;
-        font-size: 0.92rem;
-        line-height: 1.45;
-        word-break: break-word;
-        position: relative;
+        max-width: 65%; padding: 10px 14px; border-radius: 18px;
+        font-size: 0.92rem; line-height: 1.45; word-break: break-word;
     }
-
     .msg-bubble.other {
-        background: white;
-        color: #212529;
-        border-bottom-left-radius: 4px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        background: white; color: #212529;
+        border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
-
     .msg-bubble.own {
         background: linear-gradient(135deg, #2c3e8c, #1a2564);
-        color: white;
-        border-bottom-right-radius: 4px;
+        color: white; border-bottom-right-radius: 4px;
     }
-
-    .msg-time {
-        font-size: 0.68rem;
-        opacity: 0.65;
-        margin-top: 3px;
-        display: block;
-        text-align: right;
-    }
-
+    .msg-time { font-size: 0.68rem; opacity: 0.65; margin-top: 3px; display: block; }
     .msg-bubble.other .msg-time { text-align: left; }
+    .msg-bubble.own .msg-time { text-align: right; }
 
-    /* Date divider */
-    .date-divider {
-        text-align: center;
-        margin: 8px 0;
-    }
-    .date-divider span {
-        background: #dee2e6;
-        color: #6c757d;
-        padding: 3px 12px;
-        border-radius: 20px;
-        font-size: 0.72rem;
-    }
-
-    /* Empty state */
     .empty-chat {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #adb5bd;
-        text-align: center;
-        padding: 40px;
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        color: #adb5bd; text-align: center; padding: 40px;
     }
 
-    /* Typing indicator */
-    .typing-indicator {
-        padding: 4px 16px;
-        background: #f5f6fa;
-        font-size: 0.78rem;
-        color: #6c757d;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        flex-shrink: 0;
+    .conn-banner {
+        padding: 6px 16px; font-size: 0.78rem;
+        display: flex; align-items: center; gap: 8px;
+        flex-shrink: 0; transition: all 0.3s;
     }
+    .conn-banner.live   { background:#d1fae5; color:#065f46; }
+    .conn-banner.poll   { background:#fef9c3; color:#854d0e; }
+    .conn-banner.error  { background:#fee2e2; color:#991b1b; }
+    .conn-banner .dot   { width:8px;height:8px;border-radius:50%;background:currentColor; }
 
-    .typing-dots span {
-        display: inline-block;
-        width: 5px; height: 5px;
-        border-radius: 50%;
-        background: #adb5bd;
-        animation: typingBounce 1.2s infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typingBounce {
-        0%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-5px); }
-    }
-
-    /* Input Area */
     .chat-input-area {
-        background: white;
-        padding: 14px 16px;
-        border-top: 1px solid #e9ecef;
-        display: flex;
-        gap: 10px;
-        align-items: flex-end;
-        flex-shrink: 0;
+        background: white; padding: 14px 16px; border-top: 1px solid #e9ecef;
+        display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
     }
-
     #messageInput {
-        flex: 1;
-        border: 1.5px solid #dee2e6;
-        border-radius: 24px;
-        padding: 10px 16px;
-        font-size: 0.92rem;
-        resize: none;
-        max-height: 120px;
-        outline: none;
-        transition: border-color 0.2s;
-        font-family: inherit;
+        flex: 1; border: 1.5px solid #dee2e6; border-radius: 24px;
+        padding: 10px 16px; font-size: 0.92rem; resize: none;
+        max-height: 120px; outline: none; transition: border-color 0.2s; font-family: inherit;
     }
-
     #messageInput:focus { border-color: #2c3e8c; }
-
     #sendBtn {
-        width: 44px; height: 44px;
-        border-radius: 50%;
+        width: 44px; height: 44px; border-radius: 50%;
         background: linear-gradient(135deg, #2c3e8c, #1a2564);
-        color: white;
-        border: none;
+        color: white; border: none;
         display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        flex-shrink: 0;
-        transition: transform 0.15s, opacity 0.15s;
-        font-size: 1rem;
+        cursor: pointer; flex-shrink: 0; transition: transform 0.15s;
     }
     #sendBtn:hover { transform: scale(1.08); }
     #sendBtn:active { transform: scale(0.95); }
-    #sendBtn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    /* Connection status */
-    .conn-badge {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 3px 10px; border-radius: 20px; font-size: 0.72rem;
-    }
-    .conn-badge.connected { background: rgba(46,204,113,0.15); color: #27ae60; }
-    .conn-badge.connecting { background: rgba(241,196,15,0.15); color: #f39c12; }
-    .conn-badge.disconnected { background: rgba(231,76,60,0.15); color: #e74c3c; }
-
-    /* Sidebar on desktop */
-    @media (min-width: 992px) {
-        .chat-container { height: calc(100vh - 160px); }
-    }
+    @media(min-width:992px){ .chat-container{ height: calc(100vh - 160px); } }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid py-3 px-3 px-md-4" style="max-width: 1100px;">
+<div class="container-fluid py-3 px-3 px-md-4" style="max-width:1100px;">
     <div class="row g-3">
 
-        <!-- Sidebar: Item Info -->
+        <!-- Sidebar -->
         <div class="col-lg-3 d-none d-lg-block">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="fw-bold text-muted mb-3 small text-uppercase">Item Info</h6>
                     {% if item.image %}
-                    <img src="{{ item.image.url }}" class="img-fluid rounded-3 mb-3" style="width:100%; height:140px; object-fit:cover;">
+                    <img src="{{ item.image.url }}" class="img-fluid rounded-3 mb-3" style="width:100%;height:140px;object-fit:cover;">
                     {% endif %}
                     <div class="fw-bold mb-1">{{ item.title }}</div>
                     <div class="mb-2">
@@ -272,7 +137,6 @@
                     </a>
                 </div>
             </div>
-
             <div class="card border-0 shadow-sm mt-3">
                 <div class="card-body">
                     <h6 class="fw-bold text-muted mb-3 small text-uppercase">Chatting With</h6>
@@ -287,17 +151,16 @@
                     </div>
                 </div>
             </div>
-
             <a href="{% url 'inbox' %}" class="btn btn-outline-secondary btn-sm w-100 mt-3">
                 <i class="bi bi-arrow-left me-1"></i>Back to Inbox
             </a>
         </div>
 
-        <!-- Main Chat -->
+        <!-- Chat -->
         <div class="col-lg-9">
             <div class="chat-container">
 
-                <!-- Chat Header -->
+                <!-- Header -->
                 <div class="chat-header">
                     <a href="{% url 'inbox' %}" class="text-white me-1 d-lg-none" style="font-size:1.2rem;">
                         <i class="bi bi-arrow-left"></i>
@@ -305,33 +168,33 @@
                     <div class="chat-avatar">{{ other_user.username|first|upper }}</div>
                     <div class="chat-header-info">
                         <div class="chat-header-name">{{ other_user.username }}</div>
-                        <div class="chat-header-sub">
-                            <span class="online-dot"></span>
+                        <div class="chat-header-sub" id="headerSub">
+                            <span class="online-dot" id="onlineDot"></span>
                             <span id="statusText">Connecting...</span>
                         </div>
                     </div>
                     <a href="{% url 'item_detail' item.pk %}" class="item-chip d-none d-md-flex">
-                        <i class="bi bi-tag"></i>
-                        {{ item.title|truncatechars:22 }}
+                        <i class="bi bi-tag"></i>{{ item.title|truncatechars:22 }}
                     </a>
-                    <div id="connBadge" class="conn-badge connecting ms-2">
-                        <i class="bi bi-circle-fill" style="font-size:7px;"></i>
-                        <span id="connText">Connecting</span>
-                    </div>
                 </div>
 
-                <!-- Messages Area -->
+                <!-- Connection Banner -->
+                <div class="conn-banner live" id="connBanner">
+                    <div class="dot"></div>
+                    <span id="connText">Connecting to live chat...</span>
+                </div>
+
+                <!-- Messages -->
                 <div class="chat-messages" id="chatMessages">
                     {% if not chat_messages %}
                     <div class="empty-chat" id="emptyState">
-                        <i class="bi bi-chat-dots" style="font-size:3.5rem; margin-bottom:12px;"></i>
+                        <i class="bi bi-chat-dots" style="font-size:3.5rem;margin-bottom:12px;"></i>
                         <div class="fw-semibold">No messages yet</div>
-                        <div class="small mt-1">Start the conversation about "{{ item.title }}"</div>
+                        <div class="small mt-1">Say hi to start the conversation!</div>
                     </div>
                     {% else %}
-                    <!-- Render existing messages from DB -->
                     {% for msg in chat_messages %}
-                    <div class="msg-row {% if msg.sender == request.user %}own{% endif %}">
+                    <div class="msg-row {% if msg.sender == request.user %}own{% endif %}" data-msg-id="{{ msg.id }}">
                         {% if msg.sender != request.user %}
                         <div class="msg-avatar">{{ msg.sender.username|first|upper }}</div>
                         {% endif %}
@@ -347,28 +210,15 @@
                     {% endif %}
                 </div>
 
-                <!-- Typing Indicator -->
-                <div class="typing-indicator" id="typingIndicator" style="display:none;">
-                    <span>{{ other_user.username }} is typing</span>
-                    <div class="typing-dots">
-                        <span></span><span></span><span></span>
-                    </div>
-                </div>
-
-                <!-- Input Area -->
+                <!-- Input -->
                 <div class="chat-input-area">
-                    <textarea
-                        id="messageInput"
-                        placeholder="Type a message..."
-                        rows="1"
-                        maxlength="2000"
-                    ></textarea>
-                    <button id="sendBtn" title="Send message" disabled>
+                    <textarea id="messageInput" placeholder="Type a message..." rows="1" maxlength="2000"></textarea>
+                    <button id="sendBtn" title="Send">
                         <i class="bi bi-send-fill"></i>
                     </button>
                 </div>
 
-            </div><!-- /chat-container -->
+            </div>
         </div>
     </div>
 </div>
@@ -376,172 +226,187 @@
 
 {% block extra_js %}
 <script>
-    const CONVERSATION_ID = {{ conversation.id }};
-    const CURRENT_USER_ID = {{ request.user.id }};
-    const CURRENT_USERNAME = "{{ request.user.username }}";
-    const OTHER_USERNAME = "{{ other_user.username }}";
+const CONVERSATION_ID = "{{ conversation.id }}";
+const CURRENT_USER_ID = "{{ request.user.id }}";
+const CURRENT_USERNAME = "{{ request.user.username|escapejs}}";
+const OTHER_USERNAME    = "{{ other_user.username|escapejs}}";
+const POLL_URL = "{% url 'poll_messages' conversation.id %}";
+const CSRF_TOKEN = "{{ csrf_token }}";
 
-    const chatMessages = document.getElementById('chatMessages');
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const connBadge = document.getElementById('connBadge');
-    const connText = document.getElementById('connText');
-    const statusText = document.getElementById('statusText');
-    const typingIndicator = document.getElementById('typingIndicator');
-    const emptyState = document.getElementById('emptyState');
+const chatMessages  = document.getElementById('chatMessages');
+const messageInput  = document.getElementById('messageInput');
+const sendBtn       = document.getElementById('sendBtn');
+const connBanner    = document.getElementById('connBanner');
+const connText      = document.getElementById('connText');
+const statusText    = document.getElementById('statusText');
+const onlineDot     = document.getElementById('onlineDot');
+const emptyState    = document.getElementById('emptyState');
 
-    let typingTimer = null;
-    let isTyping = false;
+// Track highest message id we've rendered (avoids duplicates)
+let lastSeenId = 0;
+document.querySelectorAll('[data-msg-id]').forEach(el => {
+    lastSeenId = Math.max(lastSeenId, parseInt(el.dataset.msgId) || 0);
+});
 
-    // ── WebSocket Connection ──────────────────────────────────────────────
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${wsProtocol}//${window.location.host}/ws/chat/${CONVERSATION_ID}/`;
+let socket = null;
+let socketOpen = false;
+let pollInterval = null;
 
-    let chatSocket = null;
+// ─── WebSocket ────────────────────────────────────────────────────────────────
+function connectWS() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    socket = new WebSocket(`${proto}//${location.host}/ws/chat/${CONVERSATION_ID}/`);
 
-    function connectWebSocket() {
-        setStatus('connecting');
-        chatSocket = new WebSocket(wsUrl);
+    socket.onopen = () => {
+        socketOpen = true;
+        stopPolling();
+        setBanner('live', '🟢 Live — messages appear instantly');
+        setStatus('Live');
+    };
 
-        chatSocket.onopen = function() {
-            setStatus('connected');
-            sendBtn.disabled = false;
-            messageInput.focus();
-        };
+    socket.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        // Only render if we haven't already rendered this message id
+        if (data.message_id && data.message_id <= lastSeenId) return;
+        if (data.message_id) lastSeenId = data.message_id;
+        if (emptyState) emptyState.remove();
+        appendBubble(data);
+    };
 
-        chatSocket.onclose = function(e) {
-            setStatus('disconnected');
-            sendBtn.disabled = true;
-            // Auto-reconnect after 3 seconds
-            setTimeout(connectWebSocket, 3000);
-        };
+    socket.onclose = () => {
+        socketOpen = false;
+        setBanner('poll', '🟡 Offline — checking for new messages every 3s...');
+        setStatus('Offline');
+        startPolling();
+        // Try to reconnect WebSocket after 5s
+        setTimeout(connectWS, 5000);
+    };
 
-        chatSocket.onerror = function() {
-            setStatus('disconnected');
-        };
+    socket.onerror = () => {
+        socket.close();
+    };
+}
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
+// ─── HTTP Polling Fallback ────────────────────────────────────────────────────
+// This ensures the recipient ALWAYS gets messages even when WS is closed.
+// Messages were already saved to DB by the sender's consumer.
+function startPolling() {
+    if (pollInterval) return;
+    pollInterval = setInterval(fetchNewMessages, 3000);
+    fetchNewMessages(); // immediate first fetch
+}
 
-            // Handle typing event
-            if (data.type === 'typing') {
-                if (data.user_id !== CURRENT_USER_ID) {
-                    showTyping();
-                }
-                return;
-            }
+function stopPolling() {
+    if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+}
 
-            // Remove empty state
+async function fetchNewMessages() {
+    try {
+        const res = await fetch(`${POLL_URL}?after=${lastSeenId}`);
+        const data = await res.json();
+        data.messages.forEach(msg => {
+            if (msg.id <= lastSeenId) return;
+            lastSeenId = msg.id;
             if (emptyState) emptyState.remove();
+            appendBubble(msg);
+        });
+    } catch(e) {
+        setBanner('error', '🔴 Connection error — retrying...');
+    }
+}
 
-            // Render the incoming message
-            appendMessage({
-                content: data.message,
-                senderUsername: data.sender_username,
-                senderId: data.sender_id,
-                timestamp: data.timestamp,
-                isOwn: data.is_own,
-            });
-        };
+// ─── Send ─────────────────────────────────────────────────────────────────────
+function sendMessage() {
+    const content = messageInput.value.trim();
+    if (!content) return;
+
+    if (socketOpen && socket.readyState === WebSocket.OPEN) {
+        // Send via WebSocket — consumer saves to DB + broadcasts
+        socket.send(JSON.stringify({ message: content }));
+    } else {
+        // WebSocket offline: POST directly to save in DB
+        // Other user will get it via polling
+        sendViaHTTP(content);
     }
 
-    connectWebSocket();
+    messageInput.value = '';
+    messageInput.style.height = 'auto';
+    messageInput.focus();
+}
 
-    // ── Status Helpers ────────────────────────────────────────────────────
-    function setStatus(state) {
-        connBadge.className = 'conn-badge ' + state + ' ms-2';
-        const dot = connBadge.querySelector('.bi');
-        const dot2 = document.querySelector('.online-dot');
-        if (state === 'connected') {
-            connText.textContent = 'Online';
-            statusText.textContent = 'Online';
-            if (dot2) { dot2.style.background = '#2ecc71'; dot2.style.animationPlayState = 'running'; }
-        } else if (state === 'connecting') {
-            connText.textContent = 'Connecting';
-            statusText.textContent = 'Connecting...';
-            if (dot2) { dot2.style.background = '#f39c12'; }
-        } else {
-            connText.textContent = 'Offline';
-            statusText.textContent = 'Reconnecting...';
-            if (dot2) { dot2.style.background = '#e74c3c'; dot2.style.animationPlayState = 'paused'; }
+async function sendViaHTTP(content) {
+    try {
+        const res = await fetch(`${POLL_URL}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN,
+            },
+            body: JSON.stringify({ message: content }),
+        });
+        const data = await res.json();
+        if (data.message) {
+            if (emptyState) emptyState.remove();
+            lastSeenId = data.message.id;
+            appendBubble({ ...data.message, is_own: true });
         }
+    } catch(e) {
+        alert('Failed to send message. Please check your connection.');
     }
+}
 
-    // ── Append Message Bubble ─────────────────────────────────────────────
-    function appendMessage({ content, senderUsername, senderId, timestamp, isOwn }) {
-        const row = document.createElement('div');
-        row.className = 'msg-row' + (isOwn ? ' own' : '');
+// ─── Render Bubble ────────────────────────────────────────────────────────────
+function appendBubble({ message, sender_username, sender_id, timestamp, is_own, id }) {
+    const row = document.createElement('div');
+    row.className = 'msg-row' + (is_own ? ' own' : '');
+    if (id) row.dataset.msgId = id;
+    const init = (sender_username || 'U').charAt(0).toUpperCase();
 
-        const initial = senderUsername.charAt(0).toUpperCase();
+    if (!is_own) row.innerHTML += `<div class="msg-avatar">${init}</div>`;
+    row.innerHTML += `
+        <div class="msg-bubble ${is_own ? 'own' : 'other'}">
+            ${escapeHtml(message)}
+            <span class="msg-time">${timestamp}</span>
+        </div>`;
+    if (is_own)  row.innerHTML += `<div class="msg-avatar own-av">${init}</div>`;
 
-        if (!isOwn) {
-            row.innerHTML += `<div class="msg-avatar">${initial}</div>`;
-        }
-
-        row.innerHTML += `
-            <div class="msg-bubble ${isOwn ? 'own' : 'other'}">
-                ${escapeHtml(content)}
-                <span class="msg-time">${timestamp}</span>
-            </div>
-        `;
-
-        if (isOwn) {
-            row.innerHTML += `<div class="msg-avatar own-av">${initial}</div>`;
-        }
-
-        chatMessages.appendChild(row);
-        scrollToBottom();
-    }
-
-    // ── Send Message ──────────────────────────────────────────────────────
-    function sendMessage() {
-        const content = messageInput.value.trim();
-        if (!content || !chatSocket || chatSocket.readyState !== WebSocket.OPEN) return;
-
-        chatSocket.send(JSON.stringify({ message: content }));
-        messageInput.value = '';
-        messageInput.style.height = 'auto';
-        messageInput.focus();
-    }
-
-    sendBtn.addEventListener('click', sendMessage);
-
-    messageInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    // Auto-grow textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-
-    // ── Typing Indicator ──────────────────────────────────────────────────
-    let typingTimeout = null;
-    function showTyping() {
-        typingIndicator.style.display = 'flex';
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-            typingIndicator.style.display = 'none';
-        }, 2500);
-    }
-
-    // ── Scroll to Bottom ──────────────────────────────────────────────────
-    function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // ── Utility ───────────────────────────────────────────────────────────
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(text));
-        return div.innerHTML;
-    }
-
-    // Scroll to bottom on load
+    chatMessages.appendChild(row);
     scrollToBottom();
+}
+
+// ─── UI Helpers ───────────────────────────────────────────────────────────────
+function setBanner(state, text) {
+    connBanner.className = 'conn-banner ' + state;
+    connText.textContent = text;
+}
+
+function setStatus(text) {
+    statusText.textContent = text;
+    onlineDot.style.background = text === 'Live' ? '#2ecc71' : '#f39c12';
+}
+
+function escapeHtml(t) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(t));
+    return d.innerHTML;
+}
+
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+sendBtn.addEventListener('click', sendMessage);
+messageInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+messageInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+scrollToBottom();
+connectWS();
 </script>
 {% endblock %}

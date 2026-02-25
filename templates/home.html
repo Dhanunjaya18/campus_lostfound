@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}UniFound{% endblock %}
+{% block title %}Home - Campus Lost & Found{% endblock %}
 
 {% block content %}
 <!-- Hero -->
 <div class="hero-section">
     <div class="container text-center">
         <h1 class="display-5 fw-bold mb-3">
-            <i class="bi bi-search-heart-fill me-2"></i>UniFound
+            <i class="bi bi-search-heart-fill me-2"></i>Campus Lost & Found
         </h1>
         <p class="lead mb-4">Lost something on campus? Found something? Post it here and help your fellow students!</p>
         {% if not user.is_authenticated %}

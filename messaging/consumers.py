@@ -1,7 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from django.contrib.auth.models import User
 from .models import Conversation, Message
 
 
@@ -11,49 +10,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f'chat_{self.conversation_id}'
         self.user = self.scope['user']
 
-        # Reject unauthenticated users
         if not self.user.is_authenticated:
             await self.close()
             return
 
-        # Verify user is a participant in this conversation
         is_participant = await self.check_participant()
         if not is_participant:
             await self.close()
             return
 
-        # Join room group
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
-
-        # Mark messages as read when user connects
         await self.mark_messages_read()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message_content = data.get('message', '').strip()
-
-        if not message_content:
+        content = data.get('message', '').strip()
+        if not content:
             return
 
-        # Save message to database
-        message = await self.save_message(message_content)
+        # ✅ ALWAYS save to DB first — recipient gets it even if offline
+        message = await self.save_message(content)
 
-        # Broadcast to room group
+        # Then broadcast to anyone currently online in the room
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message_content,
+                'message': content,
                 'sender_id': self.user.id,
                 'sender_username': self.user.username,
                 'timestamp': message['timestamp'],
@@ -62,7 +49,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def chat_message(self, event):
-        """Send message to WebSocket client."""
         await self.send(text_data=json.dumps({
             'message': event['message'],
             'sender_id': event['sender_id'],
@@ -87,9 +73,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             conversation=conv,
             sender=self.user,
             content=content,
+            # is_read=False by default — recipient will see it when they open chat
         )
-        # Update conversation timestamp
-        conv.save()
+        conv.save()  # bump updated_at so inbox sorts correctly
         return {
             'id': msg.id,
             'timestamp': msg.timestamp.strftime('%H:%M'),
@@ -100,3 +86,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Conversation.objects.get(id=self.conversation_id).messages.filter(
             is_read=False
         ).exclude(sender=self.user).update(is_read=True)
+
+
+class NotificationConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        self.user = self.scope["user"]
+
+        if not self.user.is_authenticated:
+            await self.close()
+            return
+
+        self.user_group = f"user_{self.user.id}"
+
+        await self.channel_layer.group_add(
+            self.user_group,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if hasattr(self, "user_group"):
+            await self.channel_layer.group_discard(
+                self.user_group,
+                self.channel_name
+            )
+
+    async def send_notification(self, event):
+        await self.send(text_data=json.dumps({
+            "message": event["message"]
+        }))

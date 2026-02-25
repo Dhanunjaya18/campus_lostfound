@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}UniFound{% endblock %}</title>
+    <title>{% block title %}Campus Lost & Found{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
@@ -16,7 +16,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .navbar-brand { font-weight: 700; font-size: 1.3rem; }
-        .nav-link { font-weight: 500; transition: color 0.2s; }
+        .nav-link { font-weight: 500; }
 
         .card {
             border: none; border-radius: 12px;
@@ -36,48 +36,100 @@
         .badge-lost { background-color: #dc3545; }
         .badge-found { background-color: #198754; }
         .badge-returned { background-color: #6c757d; }
-        .status-badge { font-size: .75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+        .status-badge { font-size:.75rem; padding:5px 10px; border-radius:20px; font-weight:600; text-transform:uppercase; }
 
         .hero-section {
             background: linear-gradient(135deg, var(--primary) 0%, #1a2564 100%);
             color: white; padding: 60px 0; margin-bottom: 30px;
         }
 
-        .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-        .stat-number { font-size: 2rem; font-weight: 700; }
+        .stat-card { background:white; border-radius:12px; padding:20px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+        .stat-number { font-size:2rem; font-weight:700; }
 
         .page-header {
-            background: white; border-radius: 12px; padding: 20px 25px;
-            margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            background:white; border-radius:12px; padding:20px 25px;
+            margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
         }
 
         .form-card {
-            background: white; border-radius: 16px; padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background:white; border-radius:16px; padding:30px;
+            box-shadow:0 4px 20px rgba(0,0,0,0.1);
         }
 
-        .btn-primary { background-color: var(--primary); border-color: var(--primary); }
-        .btn-primary:hover { background-color: #1a2564; border-color: #1a2564; }
+        .btn-primary { background-color:var(--primary); border-color:var(--primary); }
+        .btn-primary:hover { background-color:#1a2564; border-color:#1a2564; }
 
-        footer { background: #1a1a2e; color: #adb5bd; padding: 20px 0; margin-top: 60px; }
+        footer { background:#1a1a2e; color:#adb5bd; padding:20px 0; margin-top:60px; }
 
-        .inbox-badge {
-            position: absolute; top: 4px; right: 4px;
-            background: #e74c3c; color: white;
-            border-radius: 50%; width: 16px; height: 16px;
-            font-size: 0.6rem; display: flex; align-items: center; justify-content: center;
-            font-weight: 700;
+        /* Navbar inbox badge */
+        .nav-msg-wrap { position:relative; display:inline-flex; align-items:center; }
+        #navUnreadBadge {
+            position:absolute; top:-6px; right:-10px;
+            background:#e74c3c; color:white;
+            border-radius:50%; min-width:17px; height:17px;
+            font-size:0.62rem; display:flex; align-items:center; justify-content:center;
+            font-weight:700; padding:0 3px;
+            transition: transform 0.2s;
         }
-        .nav-inbox-wrap { position: relative; display: inline-block; }
+        #navUnreadBadge.bump { transform: scale(1.4); }
+
+        /* Toast notification */
+        #notifToastContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .msg-toast {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+            padding: 14px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 360px;
+            pointer-events: all;
+            animation: slideInRight 0.3s ease, fadeOut 0.4s ease 4.6s forwards;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+        }
+
+        @keyframes slideInRight {
+            from { opacity:0; transform: translateX(60px); }
+            to   { opacity:1; transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            to { opacity:0; transform: translateY(10px); }
+        }
+
+        .toast-avatar {
+            width:38px; height:38px; border-radius:50%;
+            background: linear-gradient(135deg, var(--primary), #1a2564);
+            color:white; display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:0.95rem; flex-shrink:0;
+        }
+
+        .toast-body { flex:1; min-width:0; }
+        .toast-name { font-weight:700; font-size:0.88rem; color:#212529; }
+        .toast-preview { font-size:0.82rem; color:#6c757d; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+        .toast-time { font-size:0.72rem; color:#adb5bd; margin-top:3px; }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">
-            <i class="bi bi-search-heart-fill me-2"></i>UniFound
+            <i class="bi bi-search-heart-fill me-2"></i>Campus Lost & Found
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -97,11 +149,11 @@
                 <li class="nav-item">
                     {% unread_count user as uc %}
                     <a class="nav-link" href="{% url 'inbox' %}">
-                        <span class="nav-inbox-wrap">
-                            <i class="bi bi-chat-dots me-1"></i>
-                            {% if uc > 0 %}<span class="inbox-badge">{{ uc }}</span>{% endif %}
+                        <span class="nav-msg-wrap">
+                            <i class="bi bi-chat-dots"></i>
+                            <span id="navUnreadBadge" style="{% if not uc %}display:none{% endif %}">{{ uc }}</span>
                         </span>
-                        Messages
+                        &nbsp;Messages
                     </a>
                 </li>
                 {% endif %}
@@ -142,6 +194,7 @@
     </div>
 </nav>
 
+<!-- Django flash messages -->
 {% if messages %}
 <div class="container mt-3">
     {% for message in messages %}
@@ -155,14 +208,139 @@
 
 <main>{% block content %}{% endblock %}</main>
 
+<!-- Toast container for live message notifications -->
+<div id="notifToastContainer"></div>
+
 <footer>
     <div class="container text-center">
-        <p class="mb-0"><i class="bi bi-search-heart-fill me-2"></i>UniFound &copy; 2026</p>
+        <p class="mb-0"><i class="bi bi-search-heart-fill me-2"></i>Campus Lost & Found Portal &copy; 2024</p>
         <small>Helping students reconnect with their belongings</small>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% if user.is_authenticated %}
+<!-- ═══════════════════════════════════════════════════════════════
+     GLOBAL NOTIFICATION WEBSOCKET
+     Opens one persistent WS connection per logged-in user.
+     Works on ALL pages — user receives live toast + badge update
+     even when they are on Home, Dashboard, or any other page.
+     Messages are ALWAYS saved to DB, so offline users see them
+     in Inbox when they come back.
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${wsProtocol}//${window.location.host}/ws/notifications/`;
+    const badge = document.getElementById('navUnreadBadge');
+    const toastContainer = document.getElementById('notifToastContainer');
+
+    // Current page conversation id (if user is in a chat room, don't show toast for that room)
+    const currentConvId = window.__CURRENT_CONV_ID__ || null;
+
+    let notifSocket;
+
+    function connect() {
+        notifSocket = new WebSocket(wsUrl);
+
+        notifSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+
+            if (data.type === 'unread_count') {
+                updateBadge(data.count);
+                return;
+            }
+
+            if (data.type === 'new_message') {
+                updateBadge(data.unread_count);
+
+                // Don't show toast if user is already in that conversation
+                if (currentConvId && currentConvId === data.conversation_id) return;
+
+                showToast(data.from_username, data.message_preview, data.conversation_id);
+
+                // Play subtle notification sound using Web Audio API
+                playNotifSound();
+            }
+        };
+
+        notifSocket.onclose = function() {
+            // Reconnect after 3s — user stays notified even through page activity
+            setTimeout(connect, 3000);
+        };
+    }
+
+    connect();
+
+    function updateBadge(count) {
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = 'flex';
+            badge.classList.add('bump');
+            setTimeout(() => badge.classList.remove('bump'), 300);
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    function showToast(fromUser, preview, convId) {
+        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const initial = fromUser.charAt(0).toUpperCase();
+
+        const toast = document.createElement('div');
+        toast.className = 'msg-toast';
+        toast.innerHTML = `
+            <div class="toast-avatar">${initial}</div>
+            <div class="toast-body">
+                <div class="toast-name"><i class="bi bi-chat-dots me-1"></i>${escapeHtml(fromUser)} sent you a message</div>
+                <div class="toast-preview">${escapeHtml(preview)}</div>
+                <div class="toast-time">Just now · ${now}</div>
+            </div>
+            <button onclick="this.parentElement.remove()" style="background:none;border:none;color:#adb5bd;font-size:1rem;padding:0;cursor:pointer;flex-shrink:0;">
+                <i class="bi bi-x"></i>
+            </button>
+        `;
+
+        // Click toast → go to that chat room
+        toast.addEventListener('click', function(e) {
+            if (e.target.closest('button')) return;
+            window.location.href = `/inbox/chat/${convId}/`;
+        });
+
+        toastContainer.appendChild(toast);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentElement) toast.remove();
+        }, 5000);
+    }
+
+    function playNotifSound() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.3);
+        } catch(e) { /* Audio not supported */ }
+    }
+
+    function escapeHtml(text) {
+        const d = document.createElement('div');
+        d.appendChild(document.createTextNode(text));
+        return d.innerHTML;
+    }
+})();
+</script>
+{% endif %}
+
 {% block extra_js %}{% endblock %}
 </body>
 </html>
