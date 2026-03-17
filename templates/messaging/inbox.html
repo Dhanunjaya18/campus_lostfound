@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Inbox - Campus Lost & Found{% endblock %}
+{% block title %}Inbox - UniFound{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -13,9 +13,10 @@
         color: inherit;
         transition: background 0.15s;
         cursor: pointer;
+        transition:all .18s ease;
     }
-    .conv-item:hover { background: #f8f9fa; }
-    .conv-item.unread { background: #f0f4ff; }
+    .conv-item:hover { background: #f8f9fa; transform:translateX(3px);}
+    .conv-item.unread { background: #f0f4ff;border-left:4px solid #2c3e8c; }
 
     .conv-avatar {
         width: 46px; height: 46px;
@@ -25,6 +26,7 @@
         display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 1.1rem;
         flex-shrink: 0;
+        box-shadow:0 3px 10px rgba(44,62,140,0.25);
     }
 
     .conv-body { flex: 1; min-width: 0; }
@@ -41,17 +43,24 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 0.7rem; font-weight: 700;
         margin-left: auto;
+        animation:pulseUnread 1.8s infinite;
     }
-
-    .item-tag {
-        font-size: 0.72rem;
-        background: #e8eaf6;
-        color: #2c3e8c;
-        padding: 2px 8px;
-        border-radius: 12px;
-        display: inline-flex; align-items: center; gap: 3px;
-        margin-top: 2px;
-    }
+@keyframes pulseUnread{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.15);}
+    100%{transform:scale(1);}
+}
+    .item-tag{
+    font-size:0.72rem;
+    background:#eef1ff;
+    color:#2c3e8c;
+    padding:3px 9px;
+    border-radius:12px;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    margin-top:3px;
+}
 </style>
 {% endblock %}
 

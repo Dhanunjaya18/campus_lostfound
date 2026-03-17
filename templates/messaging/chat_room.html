@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Chat with {{ other_user.username }} - Campus Lost & Found{% endblock %}
+{% block title %}Chat with {{ other_user.username }} - UniFound{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -40,6 +40,7 @@
         flex: 1; overflow-y: auto; padding: 20px;
         display: flex; flex-direction: column; gap: 10px;
         background: #f5f6fa;
+        scroll-behavior:smooth;
     }
     .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
@@ -59,7 +60,12 @@
     .msg-bubble {
         max-width: 65%; padding: 10px 14px; border-radius: 18px;
         font-size: 0.92rem; line-height: 1.45; word-break: break-word;
+        transition: transform 0.15s, box-shadow 0.15s;
     }
+    .msg-bubble:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
     .msg-bubble.other {
         background: white; color: #212529;
         border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
@@ -105,7 +111,7 @@
         display: flex; align-items: center; justify-content: center;
         cursor: pointer; flex-shrink: 0; transition: transform 0.15s;
     }
-    #sendBtn:hover { transform: scale(1.08); }
+    #sendBtn:hover { transform: scale(1.08);box-shadow: 0 4px 14px rgba(44,62,140,0.4);}
     #sendBtn:active { transform: scale(0.95); }
 
     @media(min-width:992px){ .chat-container{ height: calc(100vh - 160px); } }

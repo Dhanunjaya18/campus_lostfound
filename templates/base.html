@@ -4,123 +4,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Campus Lost & Found{% endblock %}</title>
+    <title>{% block title %}UniFound{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #2c3e8c; }
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
 
-        .navbar {
-            background: linear-gradient(135deg, var(--primary) 0%, #1a2564 100%);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .navbar-brand { font-weight: 700; font-size: 1.3rem; }
-        .nav-link { font-weight: 500; }
+:root{
+--primary:#2c3e8c;
+--secondary:#6f42c1;
+--glass:rgba(255,255,255,0.12);
+}
 
-        .card {
-            border: none; border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+body{
+background:linear-gradient(135deg,#eef1f7,#f8f9fc);
+font-family:'Segoe UI',sans-serif;
+min-height:100vh;
+}
 
-        .item-image { height: 200px; object-fit: cover; border-radius: 12px 12px 0 0; }
-        .item-image-placeholder {
-            height: 200px;
-            background: linear-gradient(135deg, #e9ecef, #dee2e6);
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 12px 12px 0 0; color: #adb5bd; font-size: 3rem;
-        }
+/* NAVBAR */
 
-        .badge-lost { background-color: #dc3545; }
-        .badge-found { background-color: #198754; }
-        .badge-returned { background-color: #6c757d; }
-        .status-badge { font-size:.75rem; padding:5px 10px; border-radius:20px; font-weight:600; text-transform:uppercase; }
+.navbar{
+background:linear-gradient(135deg,#2c3e8c,#1a2564);
+backdrop-filter:blur(10px);
+box-shadow:0 8px 30px rgba(0,0,0,0.25);
+padding:12px 0;
+}
 
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary) 0%, #1a2564 100%);
-            color: white; padding: 60px 0; margin-bottom: 30px;
-        }
+.navbar-brand{
+font-weight:700;
+font-size:1.35rem;
+letter-spacing:.5px;
+}
 
-        .stat-card { background:white; border-radius:12px; padding:20px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
-        .stat-number { font-size:2rem; font-weight:700; }
+.nav-link{
+font-weight:500;
+opacity:.9;
+transition:all .25s;
+}
 
-        .page-header {
-            background:white; border-radius:12px; padding:20px 25px;
-            margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
-        }
+.nav-link:hover{
+opacity:1;
+transform:translateY(-1px);
+}
 
-        .form-card {
-            background:white; border-radius:16px; padding:30px;
-            box-shadow:0 4px 20px rgba(0,0,0,0.1);
-        }
+/* SEARCH BAR */
 
-        .btn-primary { background-color:var(--primary); border-color:var(--primary); }
-        .btn-primary:hover { background-color:#1a2564; border-color:#1a2564; }
+.input-group input{
+border-radius:30px 0 0 30px;
+border:none;
+padding-left:15px;
+}
 
-        footer { background:#1a1a2e; color:#adb5bd; padding:20px 0; margin-top:60px; }
+.input-group button{
+border-radius:0 30px 30px 0;
+}
 
-        /* Navbar inbox badge */
-        .nav-msg-wrap { position:relative; display:inline-flex; align-items:center; }
-        #navUnreadBadge {
-            position:absolute; top:-6px; right:-10px;
-            background:#e74c3c; color:white;
-            border-radius:50%; min-width:17px; height:17px;
-            font-size:0.62rem; display:flex; align-items:center; justify-content:center;
-            font-weight:700; padding:0 3px;
-            transition: transform 0.2s;
-        }
-        #navUnreadBadge.bump { transform: scale(1.4); }
+/* CARDS */
 
-        /* Toast notification */
-        #notifToastContainer {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-        }
+.card{
+border:none;
+border-radius:14px;
+background:white;
+box-shadow:0 4px 20px rgba(0,0,0,.08);
+transition:all .25s ease;
+overflow:hidden;
+}
 
-        .msg-toast {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.18);
-            padding: 14px 18px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            min-width: 300px;
-            max-width: 360px;
-            pointer-events: all;
-            animation: slideInRight 0.3s ease, fadeOut 0.4s ease 4.6s forwards;
-            border-left: 4px solid var(--primary);
-            cursor: pointer;
-        }
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
 
-        @keyframes slideInRight {
-            from { opacity:0; transform: translateX(60px); }
-            to   { opacity:1; transform: translateX(0); }
-        }
-        @keyframes fadeOut {
-            to { opacity:0; transform: translateY(10px); }
-        }
+.item-image{
+height:200px;
+object-fit:cover;
+}
 
-        .toast-avatar {
-            width:38px; height:38px; border-radius:50%;
-            background: linear-gradient(135deg, var(--primary), #1a2564);
-            color:white; display:flex; align-items:center; justify-content:center;
-            font-weight:700; font-size:0.95rem; flex-shrink:0;
-        }
+.item-image-placeholder{
+height:200px;
+background:linear-gradient(135deg,#e9ecef,#dee2e6);
+display:flex;
+align-items:center;
+justify-content:center;
+color:#adb5bd;
+font-size:3rem;
+}
 
-        .toast-body { flex:1; min-width:0; }
-        .toast-name { font-weight:700; font-size:0.88rem; color:#212529; }
-        .toast-preview { font-size:0.82rem; color:#6c757d; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
-        .toast-time { font-size:0.72rem; color:#adb5bd; margin-top:3px; }
-    </style>
+/* STATUS BADGES */
+
+.status-badge{
+font-size:.7rem;
+padding:6px 11px;
+border-radius:20px;
+font-weight:600;
+letter-spacing:.3px;
+}
+
+.badge-lost{background:#dc3545}
+.badge-found{background:#198754}
+.badge-returned{background:#6c757d}
+
+/* HERO */
+
+.hero-section{
+background:linear-gradient(135deg,#2c3e8c,#1a2564);
+color:white;
+padding:80px 0;
+margin-bottom:35px;
+box-shadow:0 10px 35px rgba(0,0,0,.3);
+}
+
+/* STAT CARDS */
+
+.stat-card{
+background:white;
+border-radius:16px;
+padding:25px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+transition:all .2s;
+}
+
+.stat-card:hover{
+transform:translateY(-3px);
+}
+
+.stat-number{
+font-size:2rem;
+font-weight:700;
+color:var(--primary);
+}
+
+/* PAGE HEADER */
+
+.page-header{
+background:white;
+border-radius:16px;
+padding:25px;
+margin-bottom:25px;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+}
+
+/* FORM */
+
+.form-card{
+background:white;
+border-radius:18px;
+padding:35px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+/* BUTTON */
+
+.btn-primary{
+background:linear-gradient(135deg,#2c3e8c,#1a2564);
+border:none;
+border-radius:8px;
+}
+
+.btn-primary:hover{
+transform:translateY(-1px);
+}
+
+/* FOOTER */
+
+footer{
+background:#0f172a;
+color:#9ca3af;
+padding:28px 0;
+margin-top:80px;
+font-size:.9rem;
+}
+
+/* NAV MESSAGE BADGE */
+
+.nav-msg-wrap{
+position:relative;
+display:inline-flex;
+align-items:center;
+}
+
+#navUnreadBadge{
+position:absolute;
+top:-6px;
+right:-10px;
+background:#ff3b3b;
+color:white;
+border-radius:50%;
+min-width:18px;
+height:18px;
+font-size:.65rem;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+padding:0 4px;
+}
+
+#navUnreadBadge.bump{
+transform:scale(1.4);
+}
+
+/* TOAST */
+
+#notifToastContainer{
+position:fixed;
+bottom:25px;
+right:25px;
+z-index:9999;
+display:flex;
+flex-direction:column;
+gap:12px;
+pointer-events:none;
+}
+
+.msg-toast{
+background:white;
+border-radius:16px;
+box-shadow:0 15px 40px rgba(0,0,0,.25);
+padding:15px 18px;
+display:flex;
+gap:12px;
+min-width:310px;
+max-width:360px;
+pointer-events:all;
+border-left:4px solid var(--primary);
+animation:slideIn .35s ease;
+cursor:pointer;
+}
+
+@keyframes slideIn{
+from{opacity:0;transform:translateX(50px)}
+to{opacity:1}
+}
+
+.toast-avatar{
+width:38px;
+height:38px;
+border-radius:50%;
+background:linear-gradient(135deg,#2c3e8c,#1a2564);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+font-size:.9rem;
+}
+
+.toast-body{flex:1}
+
+.toast-name{
+font-weight:700;
+font-size:.9rem;
+}
+
+.toast-preview{
+font-size:.82rem;
+color:#6c757d;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.toast-time{
+font-size:.72rem;
+color:#adb5bd;
+margin-top:3px;
+}
+
+</style>
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -129,7 +281,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">
-            <i class="bi bi-search-heart-fill me-2"></i>Campus Lost & Found
+            <i class="bi bi-search-heart-fill me-2"></i>UniFound
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -213,7 +365,7 @@
 
 <footer>
     <div class="container text-center">
-        <p class="mb-0"><i class="bi bi-search-heart-fill me-2"></i>Campus Lost & Found Portal &copy; 2024</p>
+        <p class="mb-0"><i class="bi bi-search-heart-fill me-2"></i>UniFound Portal &copy; 2026</p>
         <small>Helping students reconnect with their belongings</small>
     </div>
 </footer>

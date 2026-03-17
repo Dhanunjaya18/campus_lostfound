@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "=========================================="
-echo "   Campus Lost & Found - Setup Script     "
+echo "   UniFound - Setup Script     "
 echo "=========================================="
 
 python3 -m venv venv

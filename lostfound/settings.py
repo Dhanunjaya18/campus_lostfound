@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-campus-lostfound-secret-key-change-in-production'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["campus-lostfound.onrender.com",]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'daphne',

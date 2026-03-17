@@ -1,4 +1,4 @@
-# 🎓 Campus Lost & Found Portal
+# 🎓 UniFound Portal
 ### Django + WebSocket Real-Time Chat
 
 A fully functional Lost & Found web app for campuses with **real-time messaging** powered by Django Channels.

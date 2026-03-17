@@ -1,95 +1,264 @@
 {% extends 'base.html' %}
-{% block title %}{{ item.title }} - Campus Lost & Found{% endblock %}
+{% block title %}{{ item.title }} - UniFound{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* Image hover effect */
+.item-preview img{
+transition:transform .4s ease;
+}
+
+.item-preview:hover img{
+transform:scale(1.05);
+}
+
+/* Info chips */
+
+.info-chip{
+background:#f1f3f9;
+padding:6px 12px;
+border-radius:20px;
+font-size:.8rem;
+display:inline-flex;
+align-items:center;
+gap:4px;
+}
+
+/* Description card */
+
+.desc-card{
+border-radius:16px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+/* Action buttons */
+
+.action-buttons .btn{
+border-radius:8px;
+}
+
+</style>
+
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-            <li class="breadcrumb-item active">{{ item.title }}</li>
-        </ol>
-    </nav>
 
-    <div class="row g-4">
-        <!-- Image Column -->
-        <div class="col-md-5">
-            {% if item.image %}
-            <img src="{{ item.image.url }}" class="img-fluid rounded-3 shadow" alt="{{ item.title }}" style="width:100%; max-height:400px; object-fit:cover;">
-            {% else %}
-            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height:300px;">
-                <div class="text-center text-muted">
-                    <i class="bi bi-image" style="font-size:4rem;"></i>
-                    <p class="mt-2">No Image Available</p>
-                </div>
-            </div>
-            {% endif %}
-        </div>
+<div class="container py-5">
 
-        <!-- Details Column -->
-        <div class="col-md-7">
-            <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="fw-bold mb-0">{{ item.title }}</h3>
-                {% if item.status == 'Lost' %}
-                <span class="badge bg-danger fs-6 px-3 py-2">Lost</span>
-                {% elif item.status == 'Found' %}
-                <span class="badge bg-success fs-6 px-3 py-2">Found</span>
-                {% else %}
-                <span class="badge bg-secondary fs-6 px-3 py-2">Returned</span>
-                {% endif %}
-            </div>
+<nav aria-label="breadcrumb" class="mb-4">
+<ol class="breadcrumb">
+<li class="breadcrumb-item">
+<a href="{% url 'home' %}">Home</a>
+</li>
+<li class="breadcrumb-item active">
+{{ item.title }}
+</li>
+</ol>
+</nav>
 
-            <div class="row g-2 mb-3 text-muted small">
-                <div class="col-auto"><i class="bi bi-geo-alt me-1"></i>{{ item.location }}</div>
-                {% if item.category %}
-                <div class="col-auto"><i class="bi bi-tag me-1"></i>{{ item.category.name }}</div>
-                {% endif %}
-                <div class="col-auto"><i class="bi bi-clock me-1"></i>{{ item.date_posted|date:"F d, Y \a\t H:i" }}</div>
-                <div class="col-auto"><i class="bi bi-person me-1"></i>Posted by <strong>{{ item.posted_by.username }}</strong></div>
-            </div>
+<div class="row g-5">
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h6 class="fw-bold text-muted mb-2">DESCRIPTION</h6>
-                    <p class="mb-0">{{ item.description }}</p>
-                </div>
-            </div>
+<!-- IMAGE COLUMN -->
 
-            <!-- Action Buttons -->
-            <div class="d-flex flex-wrap gap-2">
-                {% if user.is_authenticated %}
-                    {% if item.posted_by == user %}
-                        <!-- Owner Actions -->
-                        <a href="{% url 'edit_item' item.pk %}" class="btn btn-warning">
-                            <i class="bi bi-pencil me-1"></i>Edit Item
-                        </a>
-                        {% if item.status != 'Returned' %}
-                        <form action="{% url 'mark_returned' item.pk %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-check2-circle me-1"></i>Mark as Returned
-                            </button>
-                        </form>
-                        {% endif %}
-                        <a href="{% url 'delete_item' item.pk %}" class="btn btn-outline-danger">
-                            <i class="bi bi-trash me-1"></i>Delete
-                        </a>
-                    {% else %}
-                        <!-- Contact Owner -->
-                        <a href="{% url 'start_chat' item.pk %}" class="btn btn-primary btn-lg">
-                            <i class="bi bi-chat-dots me-1"></i>Chat with Owner
-                        </a>
-                    {% endif %}
-                {% else %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary">
-                    <i class="bi bi-box-arrow-in-right me-1"></i>Login to Contact Owner
-                </a>
-                {% endif %}
+<div class="col-md-5">
 
-                <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Back to Home
-                </a>
-            </div>
-        </div>
-    </div>
+<div class="item-preview">
+
+{% if item.image %}
+
+<img src="{{ item.image.url }}"
+class="img-fluid rounded-4 shadow-sm"
+alt="{{ item.title }}"
+style="width:100%;max-height:420px;object-fit:cover;">
+
+{% else %}
+
+<div class="bg-light rounded-4 d-flex align-items-center justify-content-center"
+style="height:320px;">
+
+<div class="text-center text-muted">
+
+<i class="bi bi-image"
+style="font-size:4rem;"></i>
+
+<p class="mt-2">
+No Image Available
+</p>
+
 </div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- DETAILS COLUMN -->
+
+<div class="col-md-7">
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+
+<h2 class="fw-bold mb-0">
+{{ item.title }}
+</h2>
+
+{% if item.status == 'Lost' %}
+
+<span class="badge bg-danger fs-6 px-3 py-2">
+Lost
+</span>
+
+{% elif item.status == 'Found' %}
+
+<span class="badge bg-success fs-6 px-3 py-2">
+Found
+</span>
+
+{% else %}
+
+<span class="badge bg-secondary fs-6 px-3 py-2">
+Returned
+</span>
+
+{% endif %}
+
+</div>
+
+<!-- ITEM INFO -->
+
+<div class="d-flex flex-wrap gap-2 mb-4 text-muted small">
+
+<span class="info-chip">
+<i class="bi bi-geo-alt"></i>
+{{ item.location }}
+</span>
+
+{% if item.category %}
+
+<span class="info-chip">
+<i class="bi bi-tag"></i>
+{{ item.category.name }}
+</span>
+
+{% endif %}
+
+<span class="info-chip">
+<i class="bi bi-clock"></i>
+{{ item.date_posted|date:"F d, Y" }}
+</span>
+
+<span class="info-chip">
+<i class="bi bi-person"></i>
+{{ item.posted_by.username }}
+</span>
+
+</div>
+
+<!-- DESCRIPTION -->
+
+<div class="card desc-card mb-4">
+
+<div class="card-body">
+
+<h6 class="text-muted fw-bold mb-2">
+DESCRIPTION
+</h6>
+
+<p class="mb-0">
+{{ item.description }}
+</p>
+
+</div>
+
+</div>
+
+<!-- ACTION BUTTONS -->
+
+<div class="d-flex flex-wrap gap-2 action-buttons">
+
+{% if user.is_authenticated %}
+
+{% if item.posted_by == user %}
+
+<a href="{% url 'edit_item' item.pk %}"
+class="btn btn-warning">
+
+<i class="bi bi-pencil me-1"></i>
+Edit Item
+
+</a>
+
+{% if item.status != 'Returned' %}
+
+<form action="{% url 'mark_returned' item.pk %}"
+method="post"
+class="d-inline">
+
+{% csrf_token %}
+
+<button type="submit"
+class="btn btn-success">
+
+<i class="bi bi-check2-circle me-1"></i>
+Mark as Returned
+
+</button>
+
+</form>
+
+{% endif %}
+
+<a href="{% url 'delete_item' item.pk %}"
+class="btn btn-outline-danger">
+
+<i class="bi bi-trash me-1"></i>
+Delete
+
+</a>
+
+{% else %}
+
+<a href="{% url 'start_chat' item.pk %}"
+class="btn btn-primary btn-lg">
+
+<i class="bi bi-chat-dots me-1"></i>
+Chat with Owner
+
+</a>
+
+{% endif %}
+
+{% else %}
+
+<a href="{% url 'login' %}?next={{ request.path }}"
+class="btn btn-primary">
+
+<i class="bi bi-box-arrow-in-right me-1"></i>
+Login to Contact Owner
+
+</a>
+
+{% endif %}
+
+<a href="{% url 'home' %}"
+class="btn btn-outline-secondary">
+
+<i class="bi bi-arrow-left me-1"></i>
+Back to Home
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 {% endblock %}
