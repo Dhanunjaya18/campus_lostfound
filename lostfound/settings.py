@@ -1,11 +1,14 @@
 from pathlib import Path
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-campus-lostfound-secret-key-change-in-production'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -20,8 +23,20 @@ INSTALLED_APPS = [
     'channels',
     'items',
     'messaging',
+    'cloudinary',
+    'cloudinary_storage',
 ]
-
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dk13zgyp5',
+    'API_KEY': '484719219831564',
+    'API_SECRET': 'YUDRY0l7j54GT1RJdXTfBVVJws4',
+}
+cloudinary.config(
+    cloud_name='dk13zgyp5',
+    api_key='484719219831564',
+    api_secret='YUDRY0l7j54GT1RJdXTfBVVJws4'
+)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
